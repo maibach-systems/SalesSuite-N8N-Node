@@ -1,0 +1,50 @@
+{
+	"name": "n8n-nodes-salessuite",
+	"version": "0.1.0",
+	"description": "n8n community node for SalesSuite CRM API",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"salessuite",
+		"crm"
+	],
+	"license": "MIT",
+	"homepage": "",
+	"author": {
+		"name": "SalesSuite"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "tsc --noEmit && eslint nodes credentials --ext .ts",
+		"prepublishOnly": "npm run build"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/SalessuiteApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/SalesSuite/SalesSuite.node.js",
+			"dist/nodes/SalesSuite/SalesSuiteTrigger.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^20.0.0",
+		"gulp": "^4.0.2",
+		"n8n-workflow": "*",
+		"typescript": "~5.4.0"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
