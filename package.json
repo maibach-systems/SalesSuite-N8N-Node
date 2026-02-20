@@ -1,5 +1,5 @@
 {
-	"name": "n8n-nodes-salessuite",
+	"name": "@maibachsystems/n8n-nodes-salessuite",
 	"version": "0.1.0",
 	"description": "n8n community node for SalesSuite CRM API",
 	"keywords": [
@@ -9,13 +9,13 @@
 		"crm"
 	],
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://github.com/maibach-systems/SalesSuite-N8N-Node",
 	"author": {
-		"name": "SalesSuite"
+		"name": "Maibach Systems"
 	},
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://github.com/maibach-systems/SalesSuite-N8N-Node.git"
 	},
 	"main": "index.js",
 	"scripts": {
