@@ -1,6 +1,6 @@
 {
 	"name": "@maibachsystems/n8n-nodes-salessuite",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "n8n community node for SalesSuite CRM API",
 	"keywords": [
 		"n8n-community-node-package",

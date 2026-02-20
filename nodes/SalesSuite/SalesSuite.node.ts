@@ -387,13 +387,14 @@ export class SalesSuite implements INodeType {
 				description: 'The pipeline to create the deal in. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Contact ID',
+				displayName: 'Contact Name or ID',
 				name: 'contactId',
-				type: 'string',
+				type: 'options',
+				typeOptions: { loadOptionsMethod: 'getContacts' },
 				required: true,
 				default: '',
 				displayOptions: { show: { resource: ['deal'], operation: ['create'] } },
-				description: 'The ID of the contact to associate with this deal',
+				description: 'The contact to associate with this deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
 				displayName: 'Phase Name or ID',
@@ -732,7 +733,7 @@ export class SalesSuite implements INodeType {
 				const response = await salessuiteApiRequest.call(this, 'GET', '/pipelines');
 				const pipelines = Array.isArray(response) ? response : (response.data || response.pipelines || []);
 				return pipelines.map((p: any) => ({
-					name: p.name || p.title || p.id,
+					name: p.displayName || p.name || p.title || p.id,
 					value: p.id || p._id,
 				}));
 			},
@@ -750,16 +751,43 @@ export class SalesSuite implements INodeType {
 				}
 				const phases = pipeline.phases || pipeline.stages || pipeline.columns || [];
 				return phases.map((phase: any) => ({
-					name: phase.name || phase.title || phase.id,
+					name: phase.displayName || phase.name || phase.title || phase.id,
 					value: phase.id || phase._id,
 				}));
+			},
+
+			async getContacts(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const response = await salessuiteApiRequest.call(this, 'GET', '/contact', {}, { page: 0, pageSize: 100 });
+				let contacts: any[];
+				if (Array.isArray(response)) {
+					contacts = response;
+				} else if (response && typeof response === 'object') {
+					contacts = response.contacts || response.data || response.items || [];
+				} else {
+					contacts = [];
+				}
+				return contacts.map((c: any) => {
+					const contact = c.contact || c;
+					const person = c.mainContactPerson || {};
+					const label = [person.firstName, person.lastName].filter(Boolean).join(' ')
+						|| contact.companyName
+						|| contact.id;
+					const description = contact.companyName && person.firstName
+						? contact.companyName
+						: (person.email || '');
+					return {
+						name: label,
+						value: contact.id || contact._id,
+						description,
+					};
+				});
 			},
 
 			async getForms(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 				const response = await salessuiteApiRequest.call(this, 'GET', '/form');
 				const forms = Array.isArray(response) ? response : (response.data || response.forms || []);
 				return forms.map((f: any) => ({
-					name: f.name || f.title || f.id,
+					name: f.displayName || f.name || f.title || f.id,
 					value: f.id || f._id,
 				}));
 			},
@@ -768,7 +796,7 @@ export class SalesSuite implements INodeType {
 				const response = await salessuiteApiRequest.call(this, 'GET', '/call-types');
 				const types = Array.isArray(response) ? response : (response.data || response.callTypes || []);
 				return types.map((t: any) => ({
-					name: t.name || t.title || t.id,
+					name: t.displayName || t.name || t.title || t.id,
 					value: t.id || t._id,
 				}));
 			},
